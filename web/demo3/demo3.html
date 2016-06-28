@@ -47,6 +47,7 @@
 //                                设置上传的progress监听器
                                 xhr.upload.addEventListener("progress", function (evt) {
 
+//                                    判断文件大小是否可以计算，如果都不能计算了，那肯定不能算百分比了
                                     if (evt.lengthComputable) {
 
                                         //Do something with upload progress

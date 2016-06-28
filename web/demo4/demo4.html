@@ -14,96 +14,86 @@
     <script>
 
 
-         $(document).ready(function () {
+        $(document).ready(function () {
 
 
+            var form = document.getElementById('the-form');
+            form.onsubmit = function (evt) {
 
 
-
-             var form = document.getElementById('the-form');
-             form.onsubmit = function(evt){
+                var xhr = new XMLHttpRequest();
 
 
-                 var xhr = new XMLHttpRequest();
+                //XMLHttpRequest是否支持upload
+                if (xhr.upload) {
 
 
-                 //XMLHttpRequest是否支持upload
-                 if (xhr.upload){
+                    var file = $("#file")[0].files[0];
+
+                    console.log("file:" + file);
 
 
-                     var file = $("#file")[0].files[0];
-
-                     console.log("file:"+ file);
-
-
-                     var progress = document.getElementById("progress");
+                    var progress = document.getElementById("progress");
 //                    点击长传后设置prgress为可见
-                     progress.style.visibility = "visible";
+                    progress.style.visibility = "visible";
 
-                     var bar = document.getElementById("myBar");
+                    var bar = document.getElementById("myBar");
 
 
-                     var message = document.getElementById("messages");
-                     message.innerHTML = "upload " + file.name;
+                    var message = document.getElementById("messages");
+                    message.innerHTML = "upload " + file.name;
 
-                     var label = document.getElementById("label");
+                    var label = document.getElementById("label");
 
 
 //                     创建FormData对象用来上传文件
-                     var formData = new FormData(form);
+                    var formData = new FormData(form);
 
-                     formData.append('file', file);
-
+                    formData.append('file', file);
 
 
 //                    设置上传监听器
-                     xhr.upload.addEventListener("progress",function (evt) {
-                         var percentCompplete =  parseInt( (evt.loaded / evt.total) *100);
+                    xhr.upload.addEventListener("progress", function (evt) {
 
 
-                         console.log("percent:"+ percentCompplete);
-
-                         bar.style.width = percentCompplete + "%";
-
-                         label.innerHTML = percentCompplete+ "%"
-                     },false);
+                        if (evt.lengthComputable) {
+                            var percentCompplete = parseInt((evt.loaded / evt.total) * 100);
 
 
+                            console.log("percent:" + percentCompplete);
 
-                     xhr.onreadystatechange = function (evt) {
+                            bar.style.width = percentCompplete + "%";
 
-                         if (xhr.readyState == 4) {
-                             progress.className = (xhr.status == 200 ? "success" : "failure");
-                         }
-                     }
-
+                            label.innerHTML = percentCompplete + "%"
+                        }
 
 
-                     // Add any event handlers here...
-                     xhr.open('POST', "/demo4Servlet", true);
-                     xhr.send(formData);
-
-                 }
+                    }, false);
 
 
+                    xhr.onreadystatechange = function (evt) {
 
-                 console.log("evt:"+ evt);
-                 return false; // 避免form去提交
-
-
-             };
-
-
+                        if (xhr.readyState == 4) {
+                            progress.className = (xhr.status == 200 ? "success" : "failure");
+                        }
+                    }
 
 
+                    // Add any event handlers here...
+                    xhr.open('POST', "/demo4Servlet", true);
+                    xhr.send(formData);
+
+                }
 
 
-         });
+                console.log("evt:" + evt);
+                return false; // 避免form去提交
 
 
+            };
 
 
-
+        });
 
 
     </script>
@@ -128,23 +118,21 @@
             background: #c00 none 0 0 no-repeat;
         }
 
-
-
         #progress {
-        /*打开页面的时候设置progress不可见*/
+            /*打开页面的时候设置progress不可见*/
             visibility: collapse;
             position: relative;
             width: 100%;
             height: 30px;
             background-color: grey;
         }
+
         #myBar {
             position: absolute;
             width: 1%;
             height: 100%;
             background-color: green;
         }
-
 
         #label {
             text-align: center;
@@ -160,15 +148,14 @@
 <!-- The HTML -->
 <form id="the-form" action="/demo4Servlet" enctype="multipart/form-data">
     <input name="file" id="file" type="file">
-    <input type="submit" value="Upload" />
+    <input type="submit" value="Upload"/>
 </form>
 
-<div id="progress" >
+<div id="progress">
     <div id="myBar">
         <div id="label">0%</div>
     </div>
 </div>
-
 
 
 <div id="messages">

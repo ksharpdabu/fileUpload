@@ -14,25 +14,18 @@
     <script>
 
 
-
-
-
         $(document).ready(function () {
 
 
-
-
-
             var button = document.getElementById('btn');
-            button.onclick = function(){
-
+            button.onclick = function () {
 
 
                 var xhr = new XMLHttpRequest();
 
 
                 //XMLHttpRequest是否支持upload
-                if (xhr.upload){
+                if (xhr.upload) {
 
                     var file = $("#file")[0].files[0];
 
@@ -40,10 +33,9 @@
                     var file = document.getElementById("file").files[0];
 
 
-                    console.log("file:"+ file);
+                    console.log("file:" + file);
 
                     // create progress bar
-
 
 
                     var progress = document.getElementById("progress");
@@ -59,24 +51,27 @@
                     var label = document.getElementById("label");
 
 //                     创建FormData对象用来上传文件,这里与demo4稍微有点不同
-                    var formData = new FormData( );
+                    var formData = new FormData();
 
                     formData.append('file', file);
 
 
-
 //                    设置上传监听器
-                    xhr.upload.addEventListener("progress",function (evt) {
-                        var percentCompplete =  parseInt( (evt.loaded / evt.total) *100);
+                    xhr.upload.addEventListener("progress", function (evt) {
+
+//                        判断文件大小是否可以计算
+                        if (evt.lengthComputable){
+                            var percentCompplete = parseInt((evt.loaded / evt.total) * 100);
 
 
-                        console.log("percent:"+ percentCompplete);
+                            console.log("percent:" + percentCompplete);
 
-                        bar.style.width = percentCompplete + "%";
+                            bar.style.width = percentCompplete + "%";
 
-                        label.innerHTML = percentCompplete+ "%"
-                    },false);
+                            label.innerHTML = percentCompplete + "%"
+                        }
 
+                    }, false);
 
 
                     xhr.onreadystatechange = function (evt) {
@@ -87,13 +82,11 @@
                     }
 
 
-
                     // Add any event handlers here...
                     xhr.open('POST', "/demo4Servlet", true);
                     xhr.send(formData);
 
                 }
-
 
 
                 return false; // To avoid actual submission of the form
@@ -102,16 +95,7 @@
             };
 
 
-
-
-
-
         });
-
-
-
-
-
 
 
     </script>
@@ -144,13 +128,13 @@
             height: 30px;
             background-color: grey;
         }
+
         #myBar {
             position: absolute;
             width: 1%;
             height: 100%;
             background-color: green;
         }
-
 
         #label {
             text-align: center;
@@ -165,23 +149,21 @@
 <body>
 
 
-    <input name="file" id="file" type="file">
+<input name="file" id="file" type="file">
 
-    <button id="btn" >start Upload</button>
+<button id="btn">start Upload</button>
 
 
-
-    <div id="progress" >
-        <div id="myBar">
-            <div id="label">0%</div>
-        </div>
+<div id="progress">
+    <div id="myBar">
+        <div id="label">0%</div>
     </div>
+</div>
 
 
-
-    <div id="messages">
-        <p>Status Messages</p>
-    </div>
+<div id="messages">
+    <p>Status Messages</p>
+</div>
 
 
 </body>
