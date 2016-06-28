@@ -1,182 +1,221 @@
 <html>
 <head>
-<title>Ajax File Upload</title>
-<script language="javascript">
-var req;
+    <title>Ajax File Upload</title>
 
-function ajaxFunction()
-{
-	var url = "/servlet/FileUploadServlet";
+    <script
+            src="https://code.jquery.com/jquery-3.0.0.min.js"
+            integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
+            crossorigin="anonymous">
+
+    </script>
+
+    <script  >
+
+
+        $(document).ready(function () {
+
+            var requestXML;
+
+
+            function ajaxFunction() {
+                var url = "/servlet/FileUploadServlet";
 
 //	判断是否是IE 还是其他浏览器
-	if (window.XMLHttpRequest) // Non-IE browsers
-	{ 
-		req = new XMLHttpRequest();
+                if (window.XMLHttpRequest) // Non-IE browsers
+                {
+                    requestXML = new XMLHttpRequest();
 //		设置回调的函数
-		req.onreadystatechange = processStateChange;
+                    requestXML.onreadystatechange = processStateChange;
 
-		try 
-		{
-			req.open("GET", url, true);
-		} 
-		catch (e) 
-		{
-			alert(e);
-		}
-		req.send(null);
-	} 
-	else if (window.ActiveXObject) // IE Browsers
-	{ 
-		req = new ActiveXObject("Microsoft.XMLHTTP");
-	
-		if (req) 
-		{
-			req.onreadystatechange = processStateChange;
-			req.open("GET", url, true);
-			req.send();
-		}
-	}
-}
+                    try {
+                        requestXML.open("GET", url, true);
+                    }
+                    catch (e) {
+                        alert(e);
+                    }
+                    requestXML.send(null);
+                }
+                else if (window.ActiveXObject) // IE Browsers
+                {
+                    requestXML = new ActiveXObject("Microsoft.XMLHTTP");
 
-function processStateChange()
-{
-	/**
-	 *	State	Description
-	 *	0		The request is not initialized
-	 *	1		The request has been set up
-	 *	2		The request has been sent
-	 *	3		The request is in process
-	 *	4		The request is complete  响应已经完成
-	 */
-	if (req.readyState == 4)
-	{
-		if (req.status == 200) // OK response
-		{
-			var xml = req.responseXML;
+                    if (requestXML) {
+                        requestXML.onreadystatechange = processStateChange;
+                        requestXML.open("GET", url, true);
+                        requestXML.send();
+                    }
+                }
 
 
-			console.log(xml);
+                console.log("ajaxfun");
+            }
 
-			// No need to iterate since there will only be one set of lines
-			var isNotFinished = xml.getElementsByTagName("finished")[0];
-			var myBytesRead = xml.getElementsByTagName("bytes_read")[0];
-			var myContentLength = xml.getElementsByTagName("content_length")[0];
-			var myPercent = xml.getElementsByTagName("percent_complete")[0];
 
-			// Check to see if it's even started yet
-			if ((isNotFinished == null) && (myPercent == null))
-			{
-				document.getElementById("initializing").style.visibility = "visible";
 
-				// Sleep then call the function again
-				window.setTimeout("ajaxFunction();", 100);
-			}
-			else 
-			{
-				document.getElementById("initializing").style.visibility = "hidden";
-				document.getElementById("progressBarTable").style.visibility = "visible";
-				document.getElementById("percentCompleteTable").style.visibility = "visible";
-				document.getElementById("bytesRead").style.visibility = "visible";
+            function processStateChange( ) {
+                /**
+                 *    State    Description
+                 *    0        The request is not initialized
+                 *    1        The request has been set up
+                 *    2        The request has been sent
+                 *    3        The request is in process
+                 *    4        The request is complete  响应已经完成
+                 */
+                if (requestXML.readyState == 4) {
+                    if (requestXML.status == 200) // OK response
+                    {
+                        var xml = requestXML.responseXML;
 
-				myBytesRead = myBytesRead.firstChild.data;
-				myContentLength = myContentLength.firstChild.data;
 
-				if (myPercent != null) // It's started, get the status of the upload
-				{
-					myPercent = myPercent.firstChild.data;
-		
-					document.getElementById("progressBar").style.width = myPercent + "%";
-					document.getElementById("bytesRead").innerHTML = myBytesRead + " of " + 
-						myContentLength + " bytes read";
-					document.getElementById("percentComplete").innerHTML = myPercent + "%";
-	
-					// Sleep then call the function again
+
+                        console.log("xml"+xml );
+
+                        // No need to iterate since there will only be one set of lines
+                        var isFinished = xml.getElementsByTagName("finished")[0];
+                        var myBytesRead = xml.getElementsByTagName("bytes_read")[0];
+                        var myContentLength = xml.getElementsByTagName("content_length")[0];
+
+                        var percentCompplete = xml.getElementsByTagName("percent_complete")[0];
+
+                        var bar = document.getElementById("myBar");
+                        var label = document.getElementById("label");
+                        var message = document.getElementById("messages");
+
+                        // Check to see if it's even started yet
+
+
+                        document.getElementById("progress").style.visibility = "visible";
+                        if ((isFinished != null || isFinished !=  undefined) && (percentCompplete == null || percentCompplete == undefined )) {
+
+                            console.log("finish:");
+                            bar.style.width =   "100%";
+
+                            label.innerHTML =  "100%";
+
+
+                        }
+                        else {
+
+
+
+                            if (percentCompplete != null) // It's started, get the status of the upload
+                            {
+
+                                var myPercent = percentCompplete.textContent;
+                                console.log("percent:"+myPercent  );
+
+                                bar.style.width = myPercent + "%";
+
+                                label.innerHTML = myPercent+ "%";
+
+
 //					这是最关键的地方
 //					100ms后再次调用ajaxFunction(),这样Form的内容就可以给action中后台页面处理了。
-					window.setTimeout("ajaxFunction();", 100);
-				}
-				else
-				{
-					document.getElementById("bytesRead").style.visibility = "hidden";
-					document.getElementById("progressBar").style.width = "100%";
-					document.getElementById("percentComplete").innerHTML = "Done!";
-				}
-			}
-		}
-		else
-		{
-			alert(req.statusText);
-		}
-	}
-}
-</script>
+                                setTimeout( function () {
+                                    ajaxFunction();
+                                }, 100);
+                            }
+                            else {
+//                                document.getElementById("bytesRead").style.visibility = "hidden";
+//                                document.getElementById("progressBar").style.width = "100%";
+//                                document.getElementById("percentComplete").innerHTML = "Done!";
+                            }
+                        }
+
+//
+//
+                        console.log(  "isNotFinished"+isFinished);
+                        console.log(  "percentCompplete"+percentCompplete);
+
+                    }
+                    else {
+                        alert(requestXML.statusText);
+                    }
+                }
+            }
+
+
+
+//            为Form设置onsubmit事件
+            $("#myForm").submit( ajaxFunction);
+
+
+
+        });
+
+
+    </script>
+
+
+    <style>
+
+
+
+        #progress p {
+            display: block;
+            width: 240px;
+            padding: 2px 5px;
+            margin: 2px 0;
+            border: 1px inset #446;
+            border-radius: 5px;
+        }
+
+        #progress p.success {
+            background: #0c0 none 0 0 no-repeat;
+        }
+
+        #progress p.failed {
+            background: #c00 none 0 0 no-repeat;
+        }
+
+
+
+        #progress {
+            /*打开页面的时候设置progress不可见*/
+            visibility: collapse;
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: grey;
+        }
+        #myBar {
+            position: absolute;
+            width: 1%;
+            height: 100%;
+            background-color: green;
+        }
+
+
+        #label {
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+
+    </style>
+
 </head>
 <body>
 
 
-	<iframe id="uploadFrameID" name="uploadFrame" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
+<iframe id="uploadFrameID" name="uploadFrame" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
 
 
-	<form id="myForm" enctype="multipart/form-data" method="post" target="uploadFrame" 
-		action="/servlet/FileUploadServlet" onsubmit="ajaxFunction()">
-	    <input type="file" name="txtFile" id="txtFile" /><br />
-	    <input type="submit" id="submitID" name="submit" value="Upload" />
-	</form>
-	
-	<!-- Add hidden DIVs for updating and the progress bar (just a table) below the form -->
-	<div id="initializing" style="visibility: hidden; position: absolute; top: 100px;">
-		<table width="100%" style="border: 1px; background-color: black;">
-			<tr>
-				<td>
-					<table width="100%" style="border: 1px; background-color: black; color: white;">
-						<tr>
-							<td align="center">
-								<b>Initializing Upload...</b>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-	</div>
-	
-	<div id="progressBarTable" style="visibility: hidden; position: absolute; top: 100px;">
-		<table width="100%" style="border: 1px; background-color: black; color: white;">
-			<tr>
-				<td>
-					<table id="progressBar" width="0px" 
-						style="border: 1px; width: 0px; background-color: blue;">
-						<tr>
-							<td>&nbsp;</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<table width="100%" style="background-color: white; color: black;">
-			<tr>
-				<td align="center" nowrap="nowrap">
-					<span id="bytesRead" style="font-weight: bold;">&nbsp;</span>
-				</td>
-			</tr>
-		</table>		
-	</div>
+<form id="myForm" enctype="multipart/form-data" method="post" target="uploadFrame"
+      action="/servlet/FileUploadServlet" >
+    <input type="file" name="txtFile" id="txtFile"/><br/>
+    <input type="submit" id="submitID" name="submit" value="Upload"/>
+</form>
 
-	<div id="percentCompleteTable" align="center"
-		style="visibility: hidden; position: absolute; top: 100px;">
-		<table width="100%" style="border: 1px;">
-			<tr>
-				<td>
-					<table width="100%" style="border: 1px;">
-						<tr>
-							<td align="center" nowrap="nowrap">
- 								<span id="percentComplete" style="color: white; font-weight: bold;">&nbsp;</span>
-							</td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-   	</div>
-</body>
-</html>
+
+<div id="progress" >
+    <div id="myBar">
+        <div id="label">0%</div>
+    </div>
+</div>
+
+
+
+<div id="messages">
+    <p>Status Messages</p>
+</div>

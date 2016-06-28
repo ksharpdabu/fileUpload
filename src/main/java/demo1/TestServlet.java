@@ -24,7 +24,7 @@ public class TestServlet extends HttpServlet {
 
 
 //    保存上传文件的路径
-    private final String UPLOAD_DIRECTORY = "D:/Files/";
+    private final String UPLOAD_DIRECTORY = "D:\\files";
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -62,12 +62,12 @@ public class TestServlet extends HttpServlet {
 
         session.setAttribute("testProgressListener",testProgressListener);
 
-//        如果存放的目录不存在，就创建
-        File dir = new File(UPLOAD_DIRECTORY);
-        if ( !dir.exists()){
-
-            dir.mkdirs();
-        }
+////        如果存放的目录不存在，就创建
+//        File dir = new File(UPLOAD_DIRECTORY);
+//        if ( !dir.exists()){
+//
+//            dir.mkdirs();
+//        }
 
 
 
@@ -105,23 +105,36 @@ public class TestServlet extends HttpServlet {
                     out.println("</td>");
                 }else {
 
-//                    将文件保存到指定的目录
-                    fileItem.write(new File(UPLOAD_DIRECTORY,fileItem.getName()));
 
-                    //fileItem.getFieldName()  , 获取jsp中表单上传文件时候的字段名。这里就是 “file”。
+//                  如果html页面上可以上传三个文件，而我只填写了一个文件，这样就会导致获取不到文件名，从而导致new File的时候报错
+
+                    String fileName = fileItem.getName();
+                    if (  !"".equals(fileName) ){
+
+//                    将文件保存到指定的目录
+                        File saveFile = new File(UPLOAD_DIRECTORY,fileName);
+                        fileItem.write(saveFile);
+
+                        //fileItem.getFieldName()  , 获取jsp中表单上传文件时候的字段名。这里就是 “file”。
 //                    fileItem.getString()   打印字节流，只是为了测试。
-                    //fileItem.getName()，获取文件名
-                    //fileItem.getContentType() 获取文件的类型
-                    //fileItem.getSize() ，获取文件的大小
-                    //fileItem.toString() ，将fileItem的所有信息打印出来
-                    out.println("<td>file form field</td><td>FIELD NAME: " + fileItem.getFieldName() +
+                        //fileItem.getName()，获取文件名
+                        //fileItem.getContentType() 获取文件的类型
+                        //fileItem.getSize() ，获取文件的大小
+                        //fileItem.toString() ，将fileItem的所有信息打印出来
+                        out.println("<td>file form field</td><td>FIELD NAME: " + fileItem.getFieldName() +
 //							"<br/>STRING: " + fileItem.getString() +
-                                    "<br/>NAME: " + fileItem.getName() +
-                                    "<br/>CONTENT TYPE: " + fileItem.getContentType() +
-                                    "<br/>SIZE (BYTES): " + fileItem.getSize() +
-                                    "<br/>TO STRING: " + fileItem.toString()
-                    );
-                    out.println("</td>");
+                                        "<br/>NAME: " + fileItem.getName() +
+                                        "<br/>CONTENT TYPE: " + fileItem.getContentType() +
+                                        "<br/>SIZE (BYTES): " + fileItem.getSize() +
+                                        "<br/>TO STRING: " + fileItem.toString()
+                        );
+                        out.println("</td>");
+                    }else {
+
+                        continue;
+                    }
+
+
                 }
 
 

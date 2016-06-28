@@ -48,6 +48,8 @@ public class ProgressServlet extends HttpServlet {
             return;
         }
 
+        System.out.println("listener: not null");
+
 //        输出上传进度百分比
         out.print(listener.getMessage());
 

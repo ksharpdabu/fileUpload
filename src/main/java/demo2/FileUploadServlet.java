@@ -7,6 +7,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -37,30 +38,30 @@ public class FileUploadServlet extends HttpServlet implements Servlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        PrintWriter
-                out = response.getWriter();
-        HttpSession
-                session = request.getSession();
-        FileUploadListener
-                listener = null;
-        StringBuffer
-                buffy = new StringBuffer();
-        long
-                bytesRead = 0,
-                contentLength = 0;
+        PrintWriter out = response.getWriter();
+
+
+
+        HttpSession session = request.getSession();
+        FileUploadListener listener = null;
+        StringBuffer buffy = new StringBuffer();
+        long bytesRead = 0, contentLength = 0;
 
         // Make sure the session has started
         if (session == null)
         {
+            System.out.println("session null");
             return;
         }
-        else if (session != null)
-        {
+        else {
+            System.out.println("session not null");
             // Check to see if we've created the listener object yet
             listener = (FileUploadListener)session.getAttribute("LISTENER");
+//                listener = (FileUploadListener) context.getAttribute("LISTENER");
 
             if (listener == null)
             {
+                System.out.println("listener: null");
                 return;
             }
             else
@@ -99,6 +100,8 @@ public class FileUploadServlet extends HttpServlet implements Servlet {
 
         buffy.append("</response>\n");
 
+        System.out.println("xml:"+ buffy.toString());
+
         out.println(buffy.toString());
         out.flush();
         out.close();
@@ -116,6 +119,10 @@ public class FileUploadServlet extends HttpServlet implements Servlet {
         FileUploadListener listener = new FileUploadListener();
 
         HttpSession session = request.getSession();
+
+             ServletContext context =  request.getServletContext();
+
+           context.setAttribute("LISTENER", listener);
 
         session.setAttribute("LISTENER", listener);
 
