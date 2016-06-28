@@ -51,6 +51,11 @@ http://www.codeguru.com/java/article.php/c13913/AJAX-File-Upload-Progress-for-Ja
 
 缺点： 无
 
+截图：
+![]()
+
+
+
 
 ##demo5
 demo5是demo4的一种特殊的情况，就是页面上没有Form元素。同样需要使用FormData对象用来上传文件
