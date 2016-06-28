@@ -52,7 +52,7 @@ http://www.codeguru.com/java/article.php/c13913/AJAX-File-Upload-Progress-for-Ja
 缺点： 无
 
 截图：
-![]()
+![demo4](https://github.com/ksharpdabu/fileUpload/blob/master/srceenImage/demo4.png)
 
 
 
