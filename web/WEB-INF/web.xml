@@ -18,6 +18,7 @@
 
     <!--demo1-->
     <servlet>
+        <description>Servlet for file uploads</description>
         <servlet-name>TestServlet</servlet-name>
         <servlet-class>demo1.TestServlet</servlet-class>
     </servlet>
