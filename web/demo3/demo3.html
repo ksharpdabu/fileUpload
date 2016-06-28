@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <script
+            src="https://code.jquery.com/jquery-3.0.0.min.js"
+            integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
+            crossorigin="anonymous">
+
+    </script>
+
+    <script>
+
+
+        $(document).ready(
+                function () {
+                    $("#btn").click(function startUpload() {
+
+
+//                        判断是否选择了上传文件
+                        if ($('#fileInput')[0].files.length == 0) {
+                            alert("Please choose a file");
+                            return;
+                        }
+
+
+                        var progressBar = document.getElementById("progressBar");
+
+                        progressBar.value = 0;
+
+
+                        var formData = new FormData();
+                        formData.append('file', $('#fileInput')[0].files[0]);
+                        $.ajax({
+                            url: '/demo4Servlet',
+                            type: 'POST',
+                            cache: false,
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+
+                            xhr: function () {
+                                var xhr = new window.XMLHttpRequest();
+
+//                                设置上传的progress监听器
+                                xhr.upload.addEventListener("progress", function (evt) {
+
+                                    if (evt.lengthComputable) {
+
+                                        //Do something with upload progress
+                                        console.log("evt.loaded:" + evt.loaded);
+                                        var percentComplete = (evt.loaded / evt.total) * 100;
+                                        progressBar.value = percentComplete;
+
+
+                                    }
+
+                                }, false);
+
+
+//                                设置下载时候的progress监听器
+                                xhr.addEventListener("progress", function (evt) {
+                                    if (evt.lengthComputable) {
+                                        var percentComplete = evt.loaded / evt.total;
+                                        console.log(percentComplete);
+
+//                                        这里可以根据下载到进度，然后做自己向左的操作，比如修改页面的进度条
+
+                                    }
+                                }, false);
+                                return xhr;
+                            },
+
+                            success: function (result) {
+                                console.log("result" + result.toString());
+
+                                alert("Sucess! Upload completed");
+
+
+                            },
+                            complete: function (xhr, result) {
+
+                              //    果http code不是200，则弹窗
+                                console.log("status:" + xhr.status);
+                                if (200 != xhr.status) {
+                                    alert("Error! Upload failed Http code:" + xhr.status);
+                                }
+
+                            },
+                            error: function (xhr,status,error) {
+
+
+                                alert("Error! Upload failed. Can not connect to server.");
+
+                            }
+
+
+                        })
+
+                    });
+                }
+        );
+
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+<input type="file" id="fileInput" name="file1"/>
+
+
+<button id="btn">Start Uploading</button>
+
+
+<br/>
+<progress id="progressBar" max="100" value="0"/>
+
+</body>
+</html>

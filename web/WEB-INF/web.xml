@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+
+
+    <servlet>
+        <servlet-name>uploadServlet</servlet-name>
+        <servlet-class>UploadServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>uploadServlet</servlet-name>
+        <url-pattern>/uploadServlet</url-pattern>
+    </servlet-mapping>
+
+
+
+    <!--demo1-->
+    <servlet>
+        <servlet-name>TestServlet</servlet-name>
+        <servlet-class>demo1.TestServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ProgressServlet</servlet-name>
+        <servlet-class>demo1.ProgressServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>TestServlet</servlet-name>
+        <url-pattern>/demo2test</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ProgressServlet</servlet-name>
+        <url-pattern>/progress</url-pattern>
+    </servlet-mapping>
+    <!--demo1 over-->
+    
+    
+
+
+
+    <!--demo2-->
+    <servlet>
+        <description>Servlet for file uploads</description>
+        <display-name>File Upload Servlet</display-name>
+        <servlet-name>>FileUploadServlet</servlet-name>
+        <servlet-class>demo2.FileUploadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>>FileUploadServlet</servlet-name>
+        <url-pattern>/servlet/FileUploadServlet</url-pattern>
+    </servlet-mapping>
+    <!--demo2  Over-->
+
+
+
+    <!--demo3-->
+    <servlet>
+
+        <servlet-name>>demo3Servlet</servlet-name>
+        <servlet-class>demo3.AjaxUploadServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>>demo3Servlet</servlet-name>
+        <url-pattern>/demo3Servlet</url-pattern>
+    </servlet-mapping>
+    <!--demo3 over-->
+    
+    
+    
+    <!--demo4-->
+    
+    <servlet>
+        <servlet-name>demo4Servlet</servlet-name>
+        <servlet-class>demo4.demo4Servlet</servlet-class>
+    </servlet>
+    
+   <servlet-mapping>
+       <servlet-name>demo4Servlet</servlet-name>
+       <url-pattern>/demo4Servlet</url-pattern>
+   </servlet-mapping>
+
+    <!--demo4 over-->
+
+
+
+
+</web-app>

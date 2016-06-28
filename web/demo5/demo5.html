@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Demo 5</title>
+    <script
+            src="https://code.jquery.com/jquery-3.0.0.min.js"
+            integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="
+            crossorigin="anonymous">
+
+    </script>
+
+
+    <script>
+
+
+
+
+
+        $(document).ready(function () {
+
+
+
+
+
+            var button = document.getElementById('btn');
+            button.onclick = function(){
+
+
+
+                var xhr = new XMLHttpRequest();
+
+
+                //XMLHttpRequest是否支持upload
+                if (xhr.upload){
+
+                    var file = $("#file")[0].files[0];
+
+
+                    var file = document.getElementById("file").files[0];
+
+
+                    console.log("file:"+ file);
+
+                    // create progress bar
+
+
+
+                    var progress = document.getElementById("progress");
+//                    点击长传后设置prgress为可见
+                    progress.style.visibility = "visible";
+
+                    var bar = document.getElementById("myBar");
+
+
+                    var message = document.getElementById("messages");
+                    message.innerHTML = "upload " + file.name;
+
+                    var label = document.getElementById("label");
+
+//                     创建FormData对象用来上传文件,这里与demo4稍微有点不同
+                    var formData = new FormData( );
+
+                    formData.append('file', file);
+
+
+
+//                    设置上传监听器
+                    xhr.upload.addEventListener("progress",function (evt) {
+                        var percentCompplete =  parseInt( (evt.loaded / evt.total) *100);
+
+
+                        console.log("percent:"+ percentCompplete);
+
+                        bar.style.width = percentCompplete + "%";
+
+                        label.innerHTML = percentCompplete+ "%"
+                    },false);
+
+
+
+                    xhr.onreadystatechange = function (evt) {
+
+                        if (xhr.readyState == 4) {
+                            progress.className = (xhr.status == 200 ? "success" : "failure");
+                        }
+                    }
+
+
+
+                    // Add any event handlers here...
+                    xhr.open('POST', "/demo4Servlet", true);
+                    xhr.send(formData);
+
+                }
+
+
+
+                return false; // To avoid actual submission of the form
+
+
+            };
+
+
+
+
+
+
+        });
+
+
+
+
+
+
+
+    </script>
+
+    <style>
+
+
+        #progress p {
+            display: block;
+            width: 240px;
+            padding: 2px 5px;
+            margin: 2px 0;
+            border: 1px inset #446;
+            border-radius: 5px;
+        }
+
+        #progress p.success {
+            background: #0c0 none 0 0 no-repeat;
+        }
+
+        #progress p.failed {
+            background: #c00 none 0 0 no-repeat;
+        }
+
+        #progress {
+            /*打开页面的时候设置progress不可见*/
+            visibility: collapse;
+            position: relative;
+            width: 100%;
+            height: 30px;
+            background-color: grey;
+        }
+        #myBar {
+            position: absolute;
+            width: 1%;
+            height: 100%;
+            background-color: green;
+        }
+
+
+        #label {
+            text-align: center;
+            line-height: 30px;
+            color: white;
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+
+    <input name="file" id="file" type="file">
+
+    <button id="btn" >start Upload</button>
+
+
+
+    <div id="progress" >
+        <div id="myBar">
+            <div id="label">0%</div>
+        </div>
+    </div>
+
+
+
+    <div id="messages">
+        <p>Status Messages</p>
+    </div>
+
+
+</body>
+</html>
