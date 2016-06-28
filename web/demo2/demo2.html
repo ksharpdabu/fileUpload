@@ -20,11 +20,11 @@
             function ajaxFunction() {
                 var url = "/servlet/FileUploadServlet";
 
-//	判断是否是IE 还是其他浏览器
+                //	判断是否是IE 还是其他浏览器
                 if (window.XMLHttpRequest) // Non-IE browsers
                 {
                     requestXML = new XMLHttpRequest();
-//		设置回调的函数
+                 //		设置状态函数
                     requestXML.onreadystatechange = processStateChange;
 
                     try {
@@ -67,10 +67,10 @@
                         var xml = requestXML.responseXML;
 
 
-
                         console.log("xml"+xml );
 
-                        // No need to iterate since there will only be one set of lines
+
+                        //不需要遍历，因为只会得到含有一个元素的集合。
                         var isFinished = xml.getElementsByTagName("finished")[0];
                         var myBytesRead = xml.getElementsByTagName("bytes_read")[0];
                         var myContentLength = xml.getElementsByTagName("content_length")[0];
@@ -79,12 +79,12 @@
 
                         var bar = document.getElementById("myBar");
                         var label = document.getElementById("label");
-                        var message = document.getElementById("messages");
-
-                        // Check to see if it's even started yet
 
 
+//                        显示pregress
                         document.getElementById("progress").style.visibility = "visible";
+
+//                        判断上传是否完整，如果完整，则将进度条设置为100%
                         if ((isFinished != null || isFinished !=  undefined) && (percentCompplete == null || percentCompplete == undefined )) {
 
                             console.log("finish:");
@@ -94,11 +94,9 @@
 
 
                         }
-                        else {
+                        else {        //上传未完整，则将已经上传的进度显示出来
 
-
-
-                            if (percentCompplete != null) // It's started, get the status of the upload
+                            if (percentCompplete != null)
                             {
 
                                 var myPercent = percentCompplete.textContent;
@@ -109,8 +107,8 @@
                                 label.innerHTML = myPercent+ "%";
 
 
-//					这是最关键的地方
-//					100ms后再次调用ajaxFunction(),这样Form的内容就可以给action中后台页面处理了。
+                                //这是最关键的地方
+                                //100ms后再次调用ajaxFunction(),这样Form的内容就可以给action中后台页面处理了。
                                 setTimeout( function () {
                                     ajaxFunction();
                                 }, 100);
@@ -122,10 +120,7 @@
                             }
                         }
 
-//
-//
-                        console.log(  "isNotFinished"+isFinished);
-                        console.log(  "percentCompplete"+percentCompplete);
+
 
                     }
                     else {
@@ -216,6 +211,3 @@
 
 
 
-<div id="messages">
-    <p>Status Messages</p>
-</div>
